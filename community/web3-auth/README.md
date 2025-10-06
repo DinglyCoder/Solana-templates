@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Web3Auth + Next.js (Solana)
 
-## Getting Started
+A Next.js + Tailwind + TypeScript template showing Web3Auth social logins (Google, Twitter, Discord, GitHub), email passwordless, and SMS authentication with an embedded Solana wallet. Includes session management with JWT in HttpOnly cookies, protected routes, and examples to sign messages and send transactions.
 
-First, run the development server:
+### Quickstart
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. Create a project on Web3Auth Dashboard (`https://web3auth.io`).
+2. Copy `.env.example` to `.env.local` and set the variables:
+
+```
+NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=your-client-id
+NEXT_PUBLIC_WEB3AUTH_NETWORK=testnet
+NEXT_PUBLIC_SOLANA_RPC=https://api.devnet.solana.com
+NEXT_PUBLIC_SOLANA_CHAIN_ID=solana-devnet
+JWT_SECRET=replace-with-a-strong-secret
+SESSION_MAX_AGE_SECONDS=604800
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Install and run:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open `http://localhost:3000`.
 
-## Learn More
+### Web3Auth Dashboard Setup
 
-To learn more about Next.js, take a look at the following resources:
+- Create a plug-and-play project and copy the Client ID.
+- Configure login providers and verifiers (Google, Twitter, Discord, GitHub, Email, SMS).
+- Whitelist `http://localhost:3000` for development.
+- For production, add your domain(s) and update `NEXT_PUBLIC_*` envs.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Docs: `https://web3auth.io/docs`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Authentication Flows
 
-## Deploy on Vercel
+- Social Logins: Google, Twitter, Discord, GitHub.
+- Email Passwordless: Enter email, receive OTP via Web3Auth.
+- SMS Authentication: Enter E.164 phone number, receive OTP via Web3Auth.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Embedded Wallet
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+On successful login, Web3Auth derives an embedded Solana keypair. This template exposes simple wallet actions:
+
+- Get wallet address
+- Sign a message
+- Send a transaction (extend in `src/app/profile/page.tsx`)
+
+### Session Management
+
+- After login, a POST `/api/session/login` stores a signed JWT in an HttpOnly cookie.
+- Middleware in `src/middleware.ts` protects `/profile` and `/protected/*` routes.
+- Refresh endpoint rotates the session cookie.
+- Logout clears the cookie and calls `web3auth.logout()`.
+
+Security considerations:
+- Use a strong `JWT_SECRET` and keep it private.
+- Cookies are `httpOnly`, `sameSite=lax`, `secure` (set `secure=false` if needed locally behind HTTP).
+- Never expose private keys; only use Web3Auth providers.
+
+### Network Configuration
+
+- `NEXT_PUBLIC_WEB3AUTH_NETWORK`: `mainnet`, `testnet`, or `cyan`.
+- `NEXT_PUBLIC_SOLANA_CHAIN_ID`: `solana`, `solana-testnet`, or `solana-devnet`.
+- `NEXT_PUBLIC_SOLANA_RPC`: match to your chain id.
+
+### Troubleshooting
+
+- Invalid verifier: ensure the verifier name matches your Web3Auth dashboard config.
+- Domain not whitelisted: add your dev/prod domains in dashboard.
+- Rate limits on testnet: avoid excessive auth attempts.
+
+### Migration to Mainnet
+
+- Switch `NEXT_PUBLIC_WEB3AUTH_NETWORK=mainnet` and `NEXT_PUBLIC_SOLANA_CHAIN_ID=solana`.
+- Update `NEXT_PUBLIC_SOLANA_RPC` to a mainnet RPC endpoint.
+- Verify verifiers and domains in Web3Auth dashboard.
+
+### CLI Integration
+
+This template includes a `create-solana-dapp` block in `package.json` to guide post-install steps.

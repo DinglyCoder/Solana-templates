@@ -11,7 +11,9 @@
   "dependencies": {
     "@solana/web3.js": "^1.98.4",
     "@web3auth/modal": "^9.7.0",
+    "@web3auth/openlogin-adapter": "^9.7.0",
     "@web3auth/solana-provider": "^9.7.0",
+    "jose": "^5.9.6",
     "next": "15.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0"
@@ -26,5 +28,13 @@
     "eslint-config-next": "15.5.4",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "create-solana-dapp": {
+    "postInstall": [
+      "Copy .env.example to .env.local and set NEXT_PUBLIC_WEB3AUTH_CLIENT_ID",
+      "Run: npm run dev",
+      "Open: http://localhost:3000"
+    ],
+    "docs": "https://web3auth.io/docs"
   }
 }

@@ -1,0 +1,14 @@
+{
+  "templates": [
+    {
+      "id": "web3-auth",
+      "name": "Web3Auth + Next.js (Solana)",
+      "description": "Next.js + Tailwind with Web3Auth social/email/SMS login and embedded Solana wallet.",
+      "path": "community/web3-auth",
+      "tags": ["nextjs", "web3auth", "solana", "auth"],
+      "maintainers": ["solana-foundation"],
+      "type": "community"
+    }
+  ]
+}
+
