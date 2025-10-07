@@ -24,3 +24,4 @@ export function loadWeb3AuthEnv(): Web3AuthEnv {
 
 export const isServer = typeof window === "undefined";
 
+
